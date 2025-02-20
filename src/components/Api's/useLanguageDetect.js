@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 // This is where i declared the langauge detect.....
 // when you return, fix issue that displays unknown
 
+// shorter words tend to give inaccurate results 
 
 
 const useLanguageDetect = () => {
@@ -13,20 +14,23 @@ const useLanguageDetect = () => {
 
   useEffect(() => {
     const initializeDetector = async () => {
-      if (!("ai" in self && "languageDetector" in self.ai)) {
-        console.error("Language Detector API is not supported in this browser.");
-        return;
-      }
+      if ('ai' in self && 'languageDetector' in self.ai){
+        console.log("is available") 
+    } else{
+        console.log("is not available")
+    }
 
-      const capabilities = await self.ai.languageDetector.capabilities();
-      if (capabilities.capabilities === "no") {
+      const capabilitiesInstance = await self.ai.languageDetector.capabilities();
+
+
+      if (capabilitiesInstance.capabilities === "no") {
         console.error("Language Detector API is not available.");
         return;
       }
 
       try {
         let detectorInstance;
-        if (capabilities.capabilities === "readily") {
+        if (capabilitiesInstance.capabilities === "readily") {
           detectorInstance = await self.ai.languageDetector.create();
         } else {
           detectorInstance = await self.ai.languageDetector.create({
