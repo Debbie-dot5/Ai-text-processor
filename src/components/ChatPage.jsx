@@ -85,7 +85,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex justify-center mx-auto w-full max-w-[900px] px-4">
+    <div className="flex justify-center mx-auto w-full  max-w-[900px] px-4">
       {/* Chat Area */}
       <div className="result w-full px-5 max-h-[70vh] overflow-y-scroll">
         {messages.map((msg, index) => (
@@ -111,7 +111,7 @@ const ChatPage = () => {
               {/* Show detected language below user messages */}
               {msg.sender === "user" && (
                 <p className="text-sm text-gray-500">
-                  Detected Language: {msg.language || "Detecting..."}
+                  lang: {msg.language || "Detecting..."}
                 </p>
               )}
             </div>
@@ -127,12 +127,12 @@ const ChatPage = () => {
       </div>
 
       {/* Input Area */}
-      <div className="absolute bottom-0 w-full max-w-[900px] m-auto px-5">
+      <div className="absolute bottom-[8%] md:w-full max-w-[900px] mx-auto ">
         <div className="search bg-[#E8EBF0] flex items-center justify-between gap-2 py-[5px] px-2.5 md:py-1 md:px-5 rounded-[10px]">
           <input
             className="flex-none sm:w-[150px] md:flex-1 bg-transparent border-none outline-none p-2 text-[#444] text-lg"
             type="text"
-            placeholder="Enter your message here"
+            placeholder="Enter your message here..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
