@@ -1,9 +1,10 @@
 
 const MainBody = () => {
+    
   return (
-    <div className="w-full text-white flex flex-col mt-[10%] items-center">
-        <h1 className="text-4xl pb-4 text-[#8979bc]">Hi there!</h1>
-        {/* <p className="text-[#b76c8f]">Enter Text to translate</p> */}
+    <div className=" text-white flex   mt-[10%] ">
+        <h1 className="text-4xl pb-4 text-[#8979bc]  typewriter">Hi there!</h1>
+        {/* <p className="fucntion-text text-[#b76c8f] text-base font-light">What can I do for you today?</p> */}
       
     </div>
   )

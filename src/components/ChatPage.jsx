@@ -87,6 +87,8 @@ const ChatPage = () => {
 
   return (
     <div className="flex justify-center mx-auto w-full max-w-[900px] px-4">
+
+      {messages.length === 0 && <MainBody />}
     
       {/* Chat Area */}
       <div className="result w-full px-5 max-h-[70vh] overflow-y-scroll">
