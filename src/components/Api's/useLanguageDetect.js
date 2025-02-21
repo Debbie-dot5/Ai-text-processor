@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+
 // This is where i declared the langauge detect.....
 // when you return, fix issue that displays unknown
 
@@ -14,24 +15,20 @@ const useLanguageDetect = () => {
 
   useEffect(() => {
     const initializeDetector = async () => {
-      if ('ai' in self && 'languageDetector' in self.ai){
-        console.log("is available") 
-    } else{
-        console.log("is not available")
-    }
-
-      const capabilitiesInstance = await self.ai.languageDetector.capabilities();
-      const canDetect = capabilitiesInstance.capabilities
-
-
-      if (canDetect === "no") {
+      if (!("ai" in self) || !("languageDetector" in self.ai)) {
         console.error("Language Detector API is not available.");
         return;
       }
 
       try {
+        const capabilitiesInstance = await self.ai.languageDetector.capabilities();
+        if (capabilitiesInstance.capabilities === "no") {
+          console.error("Language detection is not supported.");
+          return;
+        }
+
         let detectorInstance;
-        if (canDetect === "readily") {
+        if (capabilitiesInstance.capabilities === "readily") {
           detectorInstance = await self.ai.languageDetector.create();
         } else {
           detectorInstance = await self.ai.languageDetector.create({
@@ -55,31 +52,37 @@ const useLanguageDetect = () => {
   }, []);
 
   useEffect(() => {
-    if (!detector || text.trim() === "") {
-      setDetectedLanguage(""); // Clear detection if text is empty
+    if (!detector || text.trim().length < 3) {
+      setDetectedLanguage(""); 
       return;
     }
 
     const detectLanguage = async () => {
-
       try {
         const results = await detector.detect(text);
-        
-        if (results.length > 0 && results[0].confidence > 0.5) {
-          setDetectedLanguage(results[0].detectedLanguage); // Show the most confident result
+
+        if (results.length > 0) {
+          const topResult = results[0];
+
+          if (topResult.confidence > 0.4) {
+            setDetectedLanguage(topResult.detectedLanguage);
+          } else {
+            setDetectedLanguage("Unknown");
+          }
         } else {
           setDetectedLanguage("Unknown");
         }
       } catch (error) {
         console.error("Error detecting language:", error);
+        setDetectedLanguage("Unknown");
       }
     };
 
     const debounceTimeout = setTimeout(() => {
       detectLanguage();
-    }, 500); // Adds a small delay to reduce API calls
+    }, 500); 
 
-    return () => clearTimeout(debounceTimeout); // Cleanup on unmount or text change
+    return () => clearTimeout(debounceTimeout);
   }, [text, detector]);
 
   return { text, setText, detectedLanguage, loading };

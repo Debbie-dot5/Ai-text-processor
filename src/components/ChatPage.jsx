@@ -4,6 +4,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 import MainBody from "./MainBody";
 
+
+
+
 const ChatPage = () => {
   // Chat messages
   const [messages, setMessages] = useState([]);
@@ -73,12 +76,12 @@ const ChatPage = () => {
     setInputText("");
     setBotLoading(true);
 
-    // Wait briefly for detection
+   
     setTimeout(async () => {
 
     
       // Detect language (already handled by useLanguageDetector)
-      const detectedLang = detectedLanguage || "en"; // Fallback if detection takes time
+      const detectedLang = detectedLanguage || "en";
 
       // Translate user message into the selected target language
       let translatedText = inputText;
@@ -91,7 +94,7 @@ const ChatPage = () => {
 
           translatedText = await translator.translate(inputText);
         } catch (error) {
-          toast.error(error)
+          toast.error("Translation failed")
           console.error("Translation failed:", error);
           translatedText = "Translation not available.";
         }
