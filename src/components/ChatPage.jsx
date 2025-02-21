@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import useLanguageDetector from "./Api's/useLanguageDetect";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 import MainBody from "./MainBody";
 
 const ChatPage = () => {
@@ -8,36 +10,55 @@ const ChatPage = () => {
   const [inputText, setInputText] = useState("");
 
   // Translator states
-  const [targetLanguage, setTargetLanguage] = useState("en"); // Default: Spanish
+  const [targetLanguage, setTargetLanguage] = useState("en"); 
   const [supportedLanguages, setSupportedLanguages] = useState([]);
   const [botLoading, setBotLoading] = useState(false);
 
   // Language Detector hook
-  const { detectedLanguage, setText, loading } = useLanguageDetector();
+  const { detectedLanguage, setText,  } = useLanguageDetector();
 
   // Fetch supported languages for the translator
   useEffect(() => {
     const fetchSupportedLanguages = async () => {
       if ("ai" in self && "translator" in self.ai) {
-        const capabilities = await self.ai.translator.capabilities();
-        const languages = ["en", "es", "fr", "pt", "ru", "tr"]; // Example languages
+        
+        try{
+          const capabilities = await self.ai.translator.capabilities();
+          const languages = ["en", "es", "fr", "pt", "ru", "tr"]; 
 
-        // Filter available languages for translation from detected language
-        const availableLanguages = languages.filter(
-          (lang) => capabilities.languagePairAvailable("en", lang) !== "no"
-        );
-        setSupportedLanguages(availableLanguages);
-      } else {
+          // Filter available languages for translation from detected language
+          const availableLanguages = languages.filter(
+            (lang) => capabilities.languagePairAvailable("en", lang) !== "no"
+          );
+          setSupportedLanguages(availableLanguages);
+
+
+        } catch (error) {
+          toast.error("Failed to load languages. Please try again.");
+          console.error("Error fetching languages:", error);
+        }
+        
+
+
+
+      }  else {
+        toast.error("Translator API is not supported in this browser.");
         console.error("Translator API is not supported in this browser.");
       }
+    
+      
     };
 
     fetchSupportedLanguages();
   }, []);
 
+
   // Handle sending the user message
   const handleSend = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) {
+      toast.error("Message cannot be empty!");
+      return
+    };
 
     // Set text for language detection
     setText(inputText);
@@ -54,6 +75,8 @@ const ChatPage = () => {
 
     // Wait briefly for detection
     setTimeout(async () => {
+
+    
       // Detect language (already handled by useLanguageDetector)
       const detectedLang = detectedLanguage || "en"; // Fallback if detection takes time
 
@@ -68,6 +91,7 @@ const ChatPage = () => {
 
           translatedText = await translator.translate(inputText);
         } catch (error) {
+          toast.error(error)
           console.error("Translation failed:", error);
           translatedText = "Translation not available.";
         }
