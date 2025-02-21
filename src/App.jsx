@@ -7,7 +7,7 @@ const App = () => {
   return (
     <div className="">
     <Header/>
-    <MainBody/>
+
       <ChatPage/>
     </div>
   )

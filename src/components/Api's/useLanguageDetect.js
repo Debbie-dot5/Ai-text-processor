@@ -21,16 +21,17 @@ const useLanguageDetect = () => {
     }
 
       const capabilitiesInstance = await self.ai.languageDetector.capabilities();
+      const canDetect = capabilitiesInstance.capabilities
 
 
-      if (capabilitiesInstance.capabilities === "no") {
+      if (canDetect === "no") {
         console.error("Language Detector API is not available.");
         return;
       }
 
       try {
         let detectorInstance;
-        if (capabilitiesInstance.capabilities === "readily") {
+        if (canDetect === "readily") {
           detectorInstance = await self.ai.languageDetector.create();
         } else {
           detectorInstance = await self.ai.languageDetector.create({
@@ -60,8 +61,10 @@ const useLanguageDetect = () => {
     }
 
     const detectLanguage = async () => {
+
       try {
         const results = await detector.detect(text);
+        
         if (results.length > 0 && results[0].confidence > 0.5) {
           setDetectedLanguage(results[0].detectedLanguage); // Show the most confident result
         } else {
